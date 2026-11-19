@@ -289,15 +289,19 @@ describe('forgejoApiCommit', () => {
     });
   });
 
-  it('warns about unsupported changes such as type changes', async () => {
+  it('skips symlinks instead of uploading their target', async () => {
     rmSync(path.join(repo.dir, 'a.txt'));
     symlinkSync('b.txt', path.join(repo.dir, 'a.txt'));
+    const secret = path.join(tempDir(), 'secret');
+    writeFileSync(secret, 'secret\n');
+    symlinkSync(secret, path.join(repo.dir, 'leak'));
     await expect(
       forgejoApiCommit(context(), 'msg', 'e', 'n')
     ).resolves.toBeUndefined();
-    expect(env.commands('warning')).toContain(
-      'Unsupported file status: T for file a.txt'
-    );
+    expect(env.commands('warning')).toEqual([
+      'Skipping symlink a.txt, not supported by Forgejo',
+      'Skipping symlink leak, not supported by Forgejo'
+    ]);
     expect(server.requests).toEqual([]);
   });
 

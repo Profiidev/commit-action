@@ -150,7 +150,7 @@ describe('forgejoApiCommit', () => {
     'warns about unsupported status %s',
     async (status) => {
       const diff = [
-        `:100644 120000 ${SRC} ${DST} ${status}`,
+        `:100644 100755 ${SRC} ${DST} ${status}`,
         'link',
         `:100644 100644 ${SRC} ${DST} M`,
         'y.rs'
