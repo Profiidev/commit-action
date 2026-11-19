@@ -1,0 +1,45 @@
+name: Commit Action
+author: ProfiiDev
+description: Commit workspace changes as signed commits via the GitHub or Forgejo API
+
+inputs:
+  github_token:
+    description: The token used to authenticate with GitHub or Forgejo.
+    required: false
+    default: ${{ github.token }}
+  commit_message:
+    description: Commit message
+    required: true
+  git_user_name:
+    description: Commit author name (Forgejo only, GitHub uses the token's identity)
+    required: false
+    default: 'GitHub Action'
+  git_user_email:
+    description: Commit author email (Forgejo only, GitHub uses the token's identity)
+    required: false
+    default: 'action@github.com'
+  add_paths:
+    description: Newline-separated git pathspecs to commit. Commits all changes if empty
+    required: false
+    default: ''
+  forgejo:
+    description: Set to `true` if the repository is hosted on Forgejo
+    required: false
+    default: 'false'
+  api_url:
+    description: API URL for GitHub or Forgejo requests. Defaults to `GITHUB_API_URL`
+    required: false
+
+outputs:
+  committed:
+    description: '`true` if a commit was created, `false` if there were no changes'
+  sha:
+    description: SHA of the created commit (empty if nothing was committed)
+
+runs:
+  using: node24
+  main: ./dist/index.js
+
+branding:
+  icon: git-commit
+  color: green
